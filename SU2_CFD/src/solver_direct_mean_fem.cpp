@@ -11051,9 +11051,8 @@ void CFEM_DG_NSSolver::ADER_DG_AliasedPredictorResidual_3D(CConfig              
       const su2double TotalEnergy  = DensityInv*solDOF[4];
       const su2double StaticEnergy = TotalEnergy - 0.5*(u*u + v*v + w*w);
 
-      FluidModel->SetTDState_rhoe(solDOF[0], StaticEnergy);
-      const su2double Pressure     = FluidModel->GetPressure();
-      const su2double ViscosityLam = FluidModel->GetLaminarViscosity();
+      const su2double Pressure     = Gamma_Minus_One*solDOF[0]*StaticEnergy;
+      const su2double ViscosityLam = 1.97203e-06;
 
       /* Compute the Cartesian gradients of the velocities and static energy. */
       const su2double dudx = DensityInv*(drudx - u*drhodx);
@@ -11074,11 +11073,6 @@ void CFEM_DG_NSSolver::ADER_DG_AliasedPredictorResidual_3D(CConfig              
 
       /* Compute the eddy viscosity, if needed, and the total viscosity. */
       su2double ViscosityTurb = 0.0;
-      if( SGSModelUsed )
-        ViscosityTurb = SGSModel->ComputeEddyViscosity_3D(solDOF[0], dudx, dudy, dudz,
-                                                          dvdx, dvdy, dvdz, dwdx,
-                                                          dwdy, dwdz, lenScale,
-                                                          elem->wallDistanceSolDOFs[i]);
       const su2double Viscosity = ViscosityLam + ViscosityTurb;
 
       /* Compute the total thermal conductivity divided by Cv. */
