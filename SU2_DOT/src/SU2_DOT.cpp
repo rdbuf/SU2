@@ -206,6 +206,8 @@ int main(int argc, char *argv[]) {
       if (rank == MASTER_NODE) cout << "Reading surface sensitivities at each node from file." << endl;
       geometry_container[iZone]->SetBoundSensitivity(config_container[iZone]);
     } else {
+      
+      geometry_container[iZone]->ReadExternalSensitivity(config_container[iZone]);
       if (rank == MASTER_NODE) cout << "Reading volume sensitivities at each node from file." << endl;
       grid_movement[iZone] = new CVolumetricMovement(geometry_container[iZone], config_container[iZone]);
       geometry_container[iZone]->SetSensitivity(config_container[iZone]);
