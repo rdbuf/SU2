@@ -18559,7 +18559,7 @@ void CPhysicalGeometry::SetSensitivity(CConfig *config) {
 void CPhysicalGeometry::ReadExternalSensitivity(CConfig *config) {
   
   ifstream restart_file;
-  string filename = config->GetSolution_AdjFileName();
+  string filename;
   bool compressible = (config->GetKind_Regime() == COMPRESSIBLE);
   bool incompressible = (config->GetKind_Regime() == INCOMPRESSIBLE);
   bool sst = config->GetKind_Turb_Model() == SST;
@@ -18606,12 +18606,11 @@ void CPhysicalGeometry::ReadExternalSensitivity(CConfig *config) {
   
   iPoint_Global = 0;
   
-  filename = "external_sens.dat";
-  
+  filename = config->GetDV_Sens_Filename();
   
   restart_file.open(filename.data(), ios::in);
   if (restart_file.fail()) {
-    SU2_MPI::Error(string("There is no adjoint restart file ") + filename, CURRENT_FUNCTION);
+    SU2_MPI::Error(string("There is no external sensitivity file ") + filename, CURRENT_FUNCTION);
   }
   
   /*--- The first line is the header ---*/
@@ -18627,13 +18626,33 @@ void CPhysicalGeometry::ReadExternalSensitivity(CConfig *config) {
   unsigned long unmatched = 0;
   su2double old_min = 0.0;
   counter = 0;
+  int count2 = 0;
   while (getline (restart_file, text_line)) {
     
+    // first check that the line has 6 entries, otherwise throw out
+    unsigned short count = 0;
+    string next;
     istringstream point_line(text_line);
+//    while(getline (point_line, next, ' ')) {
+//      cout << next << endl;
+//      count++;
+//    }
+    
+    //std::istringstream iss(text);
+    vector<string> results((istream_iterator<string>(point_line)),
+                                     istream_iterator<string>());
+    
+    if (results.size() == 6) {
+      
+      istringstream point_line(text_line);
+
+      count2++;
+      //cout<<" Line " << count2 << ": " << text_line<<endl;
     
     for (iDim = 0; iDim < nDim; iDim++) { point_line >> Coord_j[iDim];}
     
-    mindist = 1E6;;
+    mindist = 1E6;
+      
     //for (iPoint = 0; iPoint < nPoint; iPoint++ ) {
     
     for (unsigned long jPoint = AllPoints.size()-1; (int)jPoint >= 0; jPoint--) {
@@ -18670,47 +18689,57 @@ void CPhysicalGeometry::ReadExternalSensitivity(CConfig *config) {
     
     counter++;
   }
-  
-  restart_file.close();
-  
-  // write a globally ordered file
-  
-  filename = "external_sens_ordered.dat";
-  
-  ofstream out_file;
-  
-  out_file.open(filename.c_str(), ios::out);
-  if (out_file.fail()) {
-    SU2_MPI::Error(string("There is no adjoint restart file ") + filename, CURRENT_FUNCTION);
   }
-  
-  out_file << "header line \n";
-  
-  out_file.precision(15);
-  /*--- The first line is the header ---*/
-  
-  for (iPoint = 0; iPoint < nPoint; iPoint++ ) {
-    
-    out_file << iPoint << "\t";
-    
-    Coord_i = node[iPoint]->GetCoord(); mindist = 1E6;;
-    
-    for (iDim = 0; iDim < nDim; iDim++) {
-      out_file << scientific << Coord_i[iDim] << "\t";
-    }
-    
-    for (iDim = 0; iDim < 5; iDim++) {
-      out_file << scientific << 0.0 << "\t";
-    }
-    
-    for (iDim = 0; iDim < nDim; iDim++) {
-      out_file << scientific << Sensitivity[iPoint*nDim+iDim] << "\t";
-    }
-    out_file << "\n";
-    
-  }
-  
-  out_file.close();
+//  restart_file.close();
+//
+//  // write a globally ordered file in SU2 restart format
+//
+//  filename = config->GetSolution_AdjFileName();
+//
+//  filename = config->GetObjFunc_Extension(filename);
+//
+//  if (config->GetUnsteady_Simulation()) {
+//    filename = config->GetUnsteady_FileName(filename, nExtIter-1);
+//  }
+//
+//  if (config->GetnZone() > 1){
+//    filename = config->GetMultizone_FileName(filename, config->GetiZone());
+//  }
+//
+//  ofstream out_file;
+//
+//  out_file.open(filename.c_str(), ios::out);
+//  if (out_file.fail()) {
+//    SU2_MPI::Error(string("There is no adjoint restart file ") + filename, CURRENT_FUNCTION);
+//  }
+//
+//  out_file << "header line \n";
+//
+//  out_file.precision(15);
+//  /*--- The first line is the header ---*/
+//
+//  for (iPoint = 0; iPoint < nPoint; iPoint++ ) {
+//
+//    out_file << iPoint << "\t";
+//
+//    Coord_i = node[iPoint]->GetCoord(); mindist = 1E6;;
+//
+//    for (iDim = 0; iDim < nDim; iDim++) {
+//      out_file << scientific << Coord_i[iDim] << "\t";
+//    }
+//
+//    for (iDim = 0; iDim < 5; iDim++) {
+//      out_file << scientific << 0.0 << "\t";
+//    }
+//
+//    for (iDim = 0; iDim < nDim; iDim++) {
+//      out_file << scientific << Sensitivity[iPoint*nDim+iDim] << "\t";
+//    }
+//    out_file << "\n";
+//
+//  }
+//
+//  out_file.close();
   
 }
 

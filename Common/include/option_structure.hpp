@@ -1500,6 +1500,7 @@ enum ENUM_PARAM {
   CST = 21,                  /*!< \brief CST method with Kulfan parameters for airfoil deformation. */
   SURFACE_BUMP = 22,	       /*!< \brief Surfacebump function for flat surfaces deformation. */
   SURFACE_FILE = 23,		     /*!< \brief Nodal coordinates for surface set using a file (external parameterization). */
+  EXTERNAL_SENSITIVITY = 25, /*!< \brief External volume sensitivities input via file for surface projection. */
   NO_DEFORMATION = 24,		   /*!< \brief No Deformation. */
   DV_EFIELD = 30,            /*!< \brief Electric field in deformable membranes. */
   DV_YOUNG = 31,
@@ -1538,6 +1539,7 @@ static const map<string, ENUM_PARAM> Param_Map = CCreateMap<string, ENUM_PARAM>
 ("PARABOLIC", PARABOLIC)
 ("AIRFOIL", AIRFOIL)
 ("SURFACE_FILE", SURFACE_FILE)
+("EXTERNAL_SENSITIVITY", EXTERNAL_SENSITIVITY)
 ("NO_DEFORMATION", NO_DEFORMATION)
 ("CST", CST)
 ("ELECTRIC_FIELD", DV_EFIELD)
@@ -2547,6 +2549,7 @@ public:
         case FFD_THICKNESS:        nParamDV = 3; break;
         case FFD_ANGLE_OF_ATTACK:  nParamDV = 2; break;
         case SURFACE_FILE:         nParamDV = 0; break;
+        case EXTERNAL_SENSITIVITY: nParamDV = 0; break;
         case DV_EFIELD:            nParamDV = 2; break;
         case DV_YOUNG:             nParamDV = 0; break;
         case DV_POISSON:           nParamDV = 0; break;

@@ -207,10 +207,15 @@ int main(int argc, char *argv[]) {
       geometry_container[iZone]->SetBoundSensitivity(config_container[iZone]);
     } else {
       
-      geometry_container[iZone]->ReadExternalSensitivity(config_container[iZone]);
-      if (rank == MASTER_NODE) cout << "Reading volume sensitivities at each node from file." << endl;
+      if (rank == MASTER_NODE)
+        cout << "Reading volume sensitivities at each node from file." << endl;
       grid_movement[iZone] = new CVolumetricMovement(geometry_container[iZone], config_container[iZone]);
-      geometry_container[iZone]->SetSensitivity(config_container[iZone]);
+
+      /*--- Read in sensitivities from file. ---*/
+      if (config_container[ZONE_0]->GetDesign_Variable(0) == EXTERNAL_SENSITIVITY)
+        geometry_container[iZone]->ReadExternalSensitivity(config_container[iZone]);
+      else
+        geometry_container[iZone]->SetSensitivity(config_container[iZone]);
 
       if (rank == MASTER_NODE)
         cout << endl <<"---------------------- Mesh sensitivity computation ---------------------" << endl;
