@@ -289,7 +289,7 @@ void COutput::SetParaview_ASCII(CConfig *config, CGeometry *geometry, unsigned s
   /*--- Open Paraview ASCII file and write the header. ---*/
   ofstream Paraview_File;
   Paraview_File.open(cstr, ios::out);
-  Paraview_File.precision(15);
+  Paraview_File.precision(6);
   Paraview_File << "# vtk DataFile Version 3.0\n";
   Paraview_File << "vtk output\n";
   Paraview_File << "ASCII\n";
@@ -350,12 +350,10 @@ void COutput::SetParaview_ASCII(CConfig *config, CGeometry *geometry, unsigned s
             if (nDim == 2) Paraview_File << scientific << "0.0" << "\t";
           }
           else {
-            for (iDim = 0; iDim < config->fields.size()-1; iDim++)
+            for (iDim = 0; iDim < nDim; iDim++)
               Paraview_File << scientific << Data[iDim][iPoint] << "\t";
             if (nDim == 2) Paraview_File << scientific << "0.0" << "\t";
           }
-        Paraview_File << scientific << "\n";
-
         
       }
       
