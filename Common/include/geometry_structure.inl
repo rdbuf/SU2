@@ -437,7 +437,10 @@ inline vector<vector<unsigned long> > CPhysicalGeometry::GetPlanarPoints() { ret
 inline vector<vector<unsigned long> > CMultiGridGeometry::GetPlanarPoints() { return Plane_points; }
 
 inline void CGeometry::SetSensitivity(CConfig* config) {}
+
 inline void CGeometry::ReadExternalSensitivity(CConfig* config) {}
+
+inline void CGeometry::ReadExternalSensitivity(CConfig* config, bool flag) {}
 
 inline su2double CGeometry::GetSensitivity(unsigned long iPoint, unsigned short iDim) { return 0.0;}
 
