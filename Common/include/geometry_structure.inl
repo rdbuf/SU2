@@ -440,8 +440,6 @@ inline void CGeometry::SetSensitivity(CConfig* config) {}
 
 inline void CGeometry::ReadExternalSensitivity(CConfig* config) {}
 
-inline void CGeometry::ReadExternalSensitivity(CConfig* config, bool flag) {}
-
 inline su2double CGeometry::GetSensitivity(unsigned long iPoint, unsigned short iDim) { return 0.0;}
 
 inline su2double CPhysicalGeometry::GetSensitivity(unsigned long iPoint, unsigned short iDim) { return Sensitivity[iPoint*nDim+iDim];}

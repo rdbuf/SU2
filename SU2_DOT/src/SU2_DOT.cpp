@@ -213,7 +213,7 @@ int main(int argc, char *argv[]) {
 
       /*--- Read in sensitivities from file. ---*/
       if (config_container[ZONE_0]->GetDesign_Variable(0) == EXTERNAL_SENSITIVITY)
-        geometry_container[iZone]->ReadExternalSensitivity(config_container[iZone], true);
+        geometry_container[iZone]->ReadExternalSensitivity(config_container[iZone]);
       else
         geometry_container[iZone]->SetSensitivity(config_container[iZone]);
 
