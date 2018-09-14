@@ -32,10 +32,10 @@
 #include "../include/fem_geometry_structure.hpp"
 #include "../include/adt_structure.hpp"
 
-/* MKL or LAPACK include files, if supported. */
+/* MKL or LAPACKE include files, if supported. */
 #ifdef HAVE_MKL
 #include "mkl.h"
-#elif HAVE_LAPACK
+#elif HAVE_LAPACKE
 #include "lapacke.h"
 #endif
 
@@ -539,10 +539,12 @@ CMeshFEM::CMeshFEM(CGeometry *geometry, CConfig *config) {
     SU2_MPI::Isend(shortSendBuf[i].data(), shortSendBuf[i].size(), MPI_SHORT,
                    dest, dest, MPI_COMM_WORLD, &commReqs[3*i]);
     SU2_MPI::Isend(longSendBuf[i].data(), longSendBuf[i].size(), MPI_LONG,
-                   dest, dest+1, MPI_COMM_WORLD, &commReqs[3*i+1]);
+                   dest, dest+10, MPI_COMM_WORLD, &commReqs[3*i+1]);
     SU2_MPI::Isend(doubleSendBuf[i].data(), doubleSendBuf[i].size(), MPI_DOUBLE,
-                   dest, dest+2, MPI_COMM_WORLD, &commReqs[3*i+2]);
+                   dest, dest+20, MPI_COMM_WORLD, &commReqs[3*i+2]);
   }
+
+  cout << "commReqs: " << commReqs[0] << " " << commReqs[1] << " " << commReqs[2] << endl;
 
   /* Loop over the number of ranks from which I receive data. */
   for(int i=0; i<nRankRecv; ++i) {
@@ -563,24 +565,31 @@ CMeshFEM::CMeshFEM(CGeometry *geometry, CConfig *config) {
 
     /* Block until the corresponding message with longs arrives, determine
        its size, allocate the memory and receive the message. */
-    SU2_MPI::Probe(source, rank+1, MPI_COMM_WORLD, &status);
+    SU2_MPI::Probe(source, rank+10, MPI_COMM_WORLD, &status);
     SU2_MPI::Get_count(&status, MPI_LONG, &sizeMess);
     longRecvBuf[i].resize(sizeMess);
 
     SU2_MPI::Recv(longRecvBuf[i].data(), sizeMess, MPI_LONG,
-                  source, rank+1, MPI_COMM_WORLD, &status);
+                  source, rank+10, MPI_COMM_WORLD, &status);
 
     /* Idem for the message with doubles. */
-    SU2_MPI::Probe(source, rank+2, MPI_COMM_WORLD, &status);
+    SU2_MPI::Probe(source, rank+20, MPI_COMM_WORLD, &status);
     SU2_MPI::Get_count(&status, MPI_DOUBLE, &sizeMess);
     doubleRecvBuf[i].resize(sizeMess);
 
     SU2_MPI::Recv(doubleRecvBuf[i].data(), sizeMess, MPI_DOUBLE,
-                  source, rank+2, MPI_COMM_WORLD, &status);
+                  source, rank+20, MPI_COMM_WORLD, &status);
   }
 
+  cout << "short buffers:  " << shortSendBuf[0].size()  << " " << shortRecvBuf[0].size()  << endl;
+  cout << "long buffers:   " << longSendBuf[0].size()   << " " << longRecvBuf[0].size()   << endl;
+  cout << "double buffers: " << doubleSendBuf[0].size() << " " << doubleRecvBuf[0].size() << endl;
+
   /* Complete the non-blocking sends. */
+  cout << "commReqs: " << commReqs[0] << " " << commReqs[1] << " " << commReqs[2] << endl;
+  cout << "nRankSend: " << nRankSend << endl;
   SU2_MPI::Waitall(3*nRankSend, commReqs.data(), MPI_STATUSES_IGNORE);
+  cout << "commReqs.size: " << commReqs.size() << endl;
 
   /* Wild cards have been used in the communication,
      so synchronize the ranks to avoid problems.    */
@@ -5817,9 +5826,9 @@ void CMeshFEM_DG::MetricTermsVolumeElements(CConfig *config) {
     /*--- Check if the inverse of mass matrix is needed. ---*/
     if( FullInverseMassMatrix ) {
 
-      /*--- Check if LAPACK/MKL can be used to compute the inverse. ---*/
+      /*--- Check if LAPACKE/MKL can be used to compute the inverse. ---*/
 
-#if defined (HAVE_LAPACK) || defined(HAVE_MKL)
+#if defined (HAVE_LAPACKE) || defined(HAVE_MKL)
 
       /* The inverse can be computed using the Lapack routines LAPACKE_dpotrf
          and LAPACKE_dpotri. As the mass matrix is positive definite, a
