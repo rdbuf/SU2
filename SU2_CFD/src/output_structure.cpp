@@ -8444,7 +8444,7 @@ void COutput::SetBaselineResult_Files(CSolver ***solver, CGeometry ***geometry, 
             DeallocateConnectivity(config[iZone], geometry[iZone][iInst], false);
             break;
 
-          case PARAVIEW:
+          case PARAVIEW: case PARAVIEW_BINARY:
 
             /*--- Write a Paraview ASCII file ---*/
 
@@ -8481,7 +8481,7 @@ void COutput::SetBaselineResult_Files(CSolver ***solver, CGeometry ***geometry, 
             SetTecplotBinary_SurfaceSolution(config[iZone], geometry[iZone][iInst], iZone);
             break;
 
-          case PARAVIEW:
+          case PARAVIEW: case PARAVIEW_BINARY:
 
             /*--- Write a Paraview ASCII file ---*/
 
