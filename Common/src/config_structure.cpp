@@ -3771,6 +3771,16 @@ void CConfig::SetPostprocessing(unsigned short val_software, unsigned short val_
     }
   }
 
+  /*--- Check that the hybrid central/upwind numerics blending is only used
+   * with the supported convective schemes ---*/
+
+  if (Kind_RoeLowDiss != NO_ROELOWDISS) {
+    if ((Kind_Upwind_Flow != ROE) && (Kind_Upwind_Flow != SLAU) &&
+        (Kind_Upwind_Flow != SLAU2)) {
+      SU2_MPI::Error("Only ROE, SLAU, and SLAU2 schemes support upwind/central blending for convective flux.", CURRENT_FUNCTION);
+    }
+  }
+
 }
 
 void CConfig::SetMarkers(unsigned short val_software) {
