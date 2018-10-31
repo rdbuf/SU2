@@ -40,6 +40,7 @@
 CHeatSolverFVM::CHeatSolverFVM(void) : CSolver() {
 
   ConjugateVar = NULL;
+  HeatFlux = NULL;
 }
 
 CHeatSolverFVM::CHeatSolverFVM(CGeometry *geometry, CConfig *config, unsigned short iMesh) : CSolver() {
@@ -208,6 +209,16 @@ CHeatSolverFVM::CHeatSolverFVM(CGeometry *geometry, CConfig *config, unsigned sh
       ConjugateVar[iMarker][iVertex][0] = config->GetTemperature_FreeStreamND();
     }
   }
+  
+  /*--- Heat flux in all the markers ---*/
+  
+  HeatFlux = new su2double* [nMarker];
+  for (iMarker = 0; iMarker < nMarker; iMarker++) {
+    HeatFlux[iMarker] = new su2double [geometry->nVertex[iMarker]];
+    for (iVertex = 0; iVertex < geometry->nVertex[iMarker]; iVertex++) {
+      HeatFlux[iMarker][iVertex] = 0.0;
+    }
+  }
 
   /*--- If the heat solver runs stand-alone, we have to set the reference values ---*/
   if(heat_equation) {
@@ -226,7 +237,18 @@ CHeatSolverFVM::CHeatSolverFVM(CGeometry *geometry, CConfig *config, unsigned sh
   Set_MPI_Solution(geometry, config);
 }
 
-CHeatSolverFVM::~CHeatSolverFVM(void) { }
+CHeatSolverFVM::~CHeatSolverFVM(void) {
+  
+  unsigned short iMarker;
+  
+  if (HeatFlux != NULL) {
+    for (iMarker = 0; iMarker < nMarker; iMarker++) {
+      delete [] HeatFlux[iMarker];
+    }
+    delete [] HeatFlux;
+  }
+  
+}
 
 
 void CHeatSolverFVM::Preprocessing(CGeometry *geometry, CSolver **solver_container, CConfig *config, unsigned short iMesh, unsigned short iRKStep, unsigned short RunTime_EqSystem, bool Output) {
@@ -1306,6 +1328,8 @@ void CHeatSolverFVM::Heat_Fluxes(CGeometry *geometry, CSolver **solver_container
             thermal_conductivity = config->GetThermalDiffusivity_Solid()*rho_cp_solid;
           }
 
+          HeatFlux[iMarker][iVertex] = -thermal_conductivity*dTdn;
+
           Heat_Flux[iMarker] += thermal_conductivity*dTdn*config->GetTemperature_Ref()*Area;
         }
       }
@@ -1342,6 +1366,8 @@ void CHeatSolverFVM::Heat_Fluxes(CGeometry *geometry, CSolver **solver_container
           else {
             thermal_conductivity = config->GetThermalDiffusivity_Solid()*rho_cp_solid;
           }
+
+          HeatFlux[iMarker][iVertex] = -thermal_conductivity*dTdn;
 
           Heat_Flux[iMarker] += thermal_conductivity*dTdn*config->GetTemperature_Ref()*Area;
 

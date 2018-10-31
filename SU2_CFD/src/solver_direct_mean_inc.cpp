@@ -3388,7 +3388,8 @@ void CIncEulerSolver::Pressure_Forces(CGeometry *geometry, CConfig *config) {
     }
 
     if ((Boundary == EULER_WALL) || (Boundary == HEAT_FLUX) ||
-        (Boundary == ISOTHERMAL) || (Boundary == NEARFIELD_BOUNDARY) ||
+        (Boundary == ISOTHERMAL) || (Boundary == CHT_WALL_INTERFACE) ||
+        (Boundary == NEARFIELD_BOUNDARY) ||
         (Boundary == INLET_FLOW) || (Boundary == OUTLET_FLOW) ||
         (Boundary == ACTDISK_INLET) || (Boundary == ACTDISK_OUTLET)||
         (Boundary == ENGINE_INFLOW) || (Boundary == ENGINE_EXHAUST)) {
@@ -7538,7 +7539,9 @@ void CIncNSSolver::Friction_Forces(CGeometry *geometry, CConfig *config) {
       }
     }
 
-    if ((Boundary == HEAT_FLUX) || (Boundary == ISOTHERMAL)) {
+    if ((Boundary == HEAT_FLUX) ||
+        (Boundary == ISOTHERMAL) ||
+        (Boundary == CHT_WALL_INTERFACE)) {
 
       /*--- Forces initialization at each Marker ---*/
 
@@ -8222,63 +8225,69 @@ void CIncNSSolver::BC_ConjugateHeat_Interface(CGeometry *geometry, CSolver **sol
 
         Tconjugate = GetConjugateHeatVariable(val_marker, iVertex, 0)/Temperature_Ref;
 
-//        node[iPoint]->SetSolution_Old(nDim+1, Tconjugate);
-//        node[iPoint]->SetEnergy_ResTruncError_Zero();
+        /*--- Impose the value of the velocity as a strong boundary
+         condition (Dirichlet). Fix the velocity and remove any
+         contribution to the residual at this node. ---*/
+        
+        LinSysRes.SetBlock_Zero(iPoint, nDim+1);
+        
+        node[iPoint]->SetSolution_Old(nDim+1, Tconjugate);
+        node[iPoint]->SetEnergy_ResTruncError_Zero();
 
-        Normal = geometry->vertex[val_marker][iVertex]->GetNormal();
-
-        Area = 0.0;
-        for (iDim = 0; iDim < nDim; iDim++)
-          Area += Normal[iDim]*Normal[iDim];
-        Area = sqrt (Area);
-
-        /*--- Compute closest normal neighbor ---*/
-
-        Point_Normal = geometry->vertex[val_marker][iVertex]->GetNormal_Neighbor();
-
-        /*--- Get coordinates of i & nearest normal and compute distance ---*/
-
-        Coord_i = geometry->node[iPoint]->GetCoord();
-        Coord_j = geometry->node[Point_Normal]->GetCoord();
-        dist_ij = 0;
-        for (iDim = 0; iDim < nDim; iDim++)
-          dist_ij += (Coord_j[iDim]-Coord_i[iDim])*(Coord_j[iDim]-Coord_i[iDim]);
-        dist_ij = sqrt(dist_ij);
-
-        /*--- Compute the normal gradient in temperature using Twall ---*/
-
-        dTdn = -(node[Point_Normal]->GetTemperature() - Tconjugate)/dist_ij;
-
-        /*--- Get thermal conductivity ---*/
-
-        thermal_conductivity = node[iPoint]->GetThermalConductivity();
-
-        /*--- Apply a weak boundary condition for the energy equation.
-        Compute the residual due to the prescribed heat flux. ---*/
-
-        Res_Visc[nDim+1] = thermal_conductivity*dTdn*Area;
-
-        /*--- Jacobian contribution for temperature equation. ---*/
-
-        if (implicit) {
-          su2double Edge_Vector[3];
-          su2double dist_ij_2 = 0, proj_vector_ij = 0;
-          for (iDim = 0; iDim < nDim; iDim++) {
-            Edge_Vector[iDim] = Coord_j[iDim]-Coord_i[iDim];
-            dist_ij_2 += Edge_Vector[iDim]*Edge_Vector[iDim];
-            proj_vector_ij += Edge_Vector[iDim]*Normal[iDim];
-          }
-          if (dist_ij_2 == 0.0) proj_vector_ij = 0.0;
-          else proj_vector_ij = proj_vector_ij/dist_ij_2;
-
-          Jacobian_i[nDim+1][nDim+1] = -thermal_conductivity*proj_vector_ij;
-
-          Jacobian.SubtractBlock(iPoint, iPoint, Jacobian_i);
-        }
-
-        /*--- Viscous contribution to the residual at the wall ---*/
-
-        LinSysRes.SubtractBlock(iPoint, Res_Visc);
+//        Normal = geometry->vertex[val_marker][iVertex]->GetNormal();
+//
+//        Area = 0.0;
+//        for (iDim = 0; iDim < nDim; iDim++)
+//          Area += Normal[iDim]*Normal[iDim];
+//        Area = sqrt (Area);
+//
+//        /*--- Compute closest normal neighbor ---*/
+//
+//        Point_Normal = geometry->vertex[val_marker][iVertex]->GetNormal_Neighbor();
+//
+//        /*--- Get coordinates of i & nearest normal and compute distance ---*/
+//
+//        Coord_i = geometry->node[iPoint]->GetCoord();
+//        Coord_j = geometry->node[Point_Normal]->GetCoord();
+//        dist_ij = 0;
+//        for (iDim = 0; iDim < nDim; iDim++)
+//          dist_ij += (Coord_j[iDim]-Coord_i[iDim])*(Coord_j[iDim]-Coord_i[iDim]);
+//        dist_ij = sqrt(dist_ij);
+//
+//        /*--- Compute the normal gradient in temperature using Twall ---*/
+//
+//        dTdn = -(node[Point_Normal]->GetTemperature() - Tconjugate)/dist_ij;
+//
+//        /*--- Get thermal conductivity ---*/
+//
+//        thermal_conductivity = node[iPoint]->GetThermalConductivity();
+//
+//        /*--- Apply a weak boundary condition for the energy equation.
+//        Compute the residual due to the prescribed heat flux. ---*/
+//
+//        Res_Visc[nDim+1] = thermal_conductivity*dTdn*Area;
+//
+//        /*--- Jacobian contribution for temperature equation. ---*/
+//
+//        if (implicit) {
+//          su2double Edge_Vector[3];
+//          su2double dist_ij_2 = 0, proj_vector_ij = 0;
+//          for (iDim = 0; iDim < nDim; iDim++) {
+//            Edge_Vector[iDim] = Coord_j[iDim]-Coord_i[iDim];
+//            dist_ij_2 += Edge_Vector[iDim]*Edge_Vector[iDim];
+//            proj_vector_ij += Edge_Vector[iDim]*Normal[iDim];
+//          }
+//          if (dist_ij_2 == 0.0) proj_vector_ij = 0.0;
+//          else proj_vector_ij = proj_vector_ij/dist_ij_2;
+//
+//          Jacobian_i[nDim+1][nDim+1] = -thermal_conductivity*proj_vector_ij;
+//
+//          Jacobian.SubtractBlock(iPoint, iPoint, Jacobian_i);
+//        }
+//
+//        /*--- Viscous contribution to the residual at the wall ---*/
+//
+//        LinSysRes.SubtractBlock(iPoint, Res_Visc);
 
       }
 
@@ -8290,10 +8299,10 @@ void CIncNSSolver::BC_ConjugateHeat_Interface(CGeometry *geometry, CSolver **sol
           total_index = iPoint*nVar+iVar;
           Jacobian.DeleteValsRowi(total_index);
         }
-//        if(energy) {
-//          total_index = iPoint*nVar+nDim+1;
-//          Jacobian.DeleteValsRowi(total_index);
-//        }
+        if(energy) {
+          total_index = iPoint*nVar+nDim+1;
+          Jacobian.DeleteValsRowi(total_index);
+        }
       }
 
     }

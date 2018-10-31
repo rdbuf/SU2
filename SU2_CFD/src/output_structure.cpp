@@ -14083,7 +14083,7 @@ void COutput::LoadLocalData_Base(CConfig *config, CGeometry *geometry, CSolver *
   unsigned long iVar, jVar;
   unsigned long iPoint, jPoint, FirstIndex = NONE, iMarker, iVertex;
   unsigned long nVar_First = 0, nVar_Consv_Par = 0;
-  
+  su2double *Aux_Heat = NULL;
   bool Wrt_Halo = config->GetWrt_Halo(), isPeriodic;
   
   int *Local_Halo;
@@ -14095,6 +14095,9 @@ void COutput::LoadLocalData_Base(CConfig *config, CGeometry *geometry, CSolver *
   
   switch (config->GetKind_Solver()) {
     case HEAT_EQUATION_FVM: FirstIndex = HEAT_SOL;     break;
+    default:
+      SU2_MPI::Error("Unrecognized solver kind for output.", CURRENT_FUNCTION);
+      break;
   }
   
   nVar_First = solver[FirstIndex]->GetnVar();
@@ -14122,11 +14125,7 @@ void COutput::LoadLocalData_Base(CConfig *config, CGeometry *geometry, CSolver *
    conservative variables, so these follow next. ---*/
   
   nVar_Par += nVar_Consv_Par;
-  for (iVar = 0; iVar < nVar_Consv_Par; iVar++) {
-    varname << "Conservative_" << iVar+1;
-    Variable_Names.push_back(varname.str());
-    varname.str("");
-  }
+  Variable_Names.push_back("Temperature");
   
   /*--- If requested, register the residuals for all of the
    equations in the current problem. ---*/
@@ -14137,16 +14136,38 @@ void COutput::LoadLocalData_Base(CConfig *config, CGeometry *geometry, CSolver *
     
     if (config->GetWrt_Residuals()) {
       nVar_Par += nVar_Consv_Par;
-      for (iVar = 0; iVar < nVar_Consv_Par; iVar++) {
-        varname << "Residual_" << iVar+1;
-        Variable_Names.push_back(varname.str());
-        varname.str("");
-      }
+      Variable_Names.push_back("Residual_Temperature");
     }
     
     /*--- New variables get registered here before the end of the loop. ---*/
     
   }
+  
+  /*--- Heat Flux ---*/
+  
+  nVar_Par += 1;
+  Variable_Names.push_back("Heat_Flux");
+  
+  /*--- Auxiliary vectors for variables defined on surfaces only. ---*/
+  
+    Aux_Heat    = new su2double[geometry->GetnPoint()];
+
+    /*--- First, loop through the mesh in order to find and store the
+     value of the viscous coefficients at any surface nodes. They
+     will be placed in an auxiliary vector and then communicated like
+     all other volumetric variables. ---*/
+    
+    for (iPoint = 0; iPoint < geometry->GetnPoint(); iPoint++) {
+      Aux_Heat[iPoint]    = 0.0;
+    }
+    for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++) {
+      if (config->GetMarker_All_Plotting(iMarker) == YES) {
+        for (iVertex = 0; iVertex < geometry->nVertex[iMarker]; iVertex++) {
+          iPoint = geometry->vertex[iMarker][iVertex]->GetNode();
+          Aux_Heat[iPoint] = solver[HEAT_SOL]->GetHeatFlux(iMarker, iVertex);
+        }
+      }
+    }
   
   /*--- Allocate the local data structure now that we know how many
    variables are in the output. ---*/
@@ -14230,6 +14251,10 @@ void COutput::LoadLocalData_Base(CConfig *config, CGeometry *geometry, CSolver *
           }
         }
       }
+      
+      /*--- Load data for the heat flux ---*/
+      
+      Local_Data[jPoint][iVar] = Aux_Heat[iPoint]; iVar++;
       
       /*--- New variables can be loaded to the Local_Data structure here,
        assuming they were registered above correctly. ---*/
