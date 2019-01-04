@@ -380,6 +380,16 @@ CTNE2EulerSolver::CTNE2EulerSolver(CGeometry *geometry, CConfig *config, unsigne
     Surface_CMy      = new su2double[config->GetnMarker_Monitoring()];
     Surface_CMz      = new su2double[config->GetnMarker_Monitoring()];
 
+  /*--- Rotorcraft coefficients ---*/
+  
+  CT_Inv           = new su2double[nMarker];
+  CQ_Inv           = new su2double[nMarker];
+  CMerit_Inv       = new su2double[nMarker];
+  
+  CT_Mnt           = new su2double[nMarker];
+  CQ_Mnt           = new su2double[nMarker];
+  CMerit_Mnt       = new su2double[nMarker];
+  
 	/*--- Initialize total coefficients ---*/
     Total_CD        = 0.0;    Total_CL           = 0.0;    Total_CSF            = 0.0;
     Total_CMx       = 0.0;    Total_CMy          = 0.0;    Total_CMz            = 0.0;
@@ -597,7 +607,7 @@ CTNE2EulerSolver::~CTNE2EulerSolver(void) {
 	unsigned short iVar, iMarker;
 
 	/*--- Array deallocation ---*/
-  if (Velocity_Inf != NULL)     delete [] Velocity_Inf;
+  //if (Velocity_Inf != NULL)     delete [] Velocity_Inf; TDE: this is a class pointer that typically points to the array in config.. don't need to allocate or delete here. Check the NS version, as there is an odd initialization where a cvariable object is used to initialize this (and it is also allocated again).
   if (CD_Inv != NULL)           delete [] CD_Inv;
   if (CL_Inv != NULL)           delete [] CL_Inv;
   if (CSF_Inv != NULL)          delete [] CSF_Inv;
@@ -635,8 +645,6 @@ CTNE2EulerSolver::~CTNE2EulerSolver(void) {
   if (CMerit_Inv != NULL)       delete [] CMerit_Inv;
   if (CT_Inv != NULL)           delete [] CT_Inv;
   if (CQ_Inv != NULL)           delete [] CQ_Inv;
-  if (CEquivArea_Inv != NULL)   delete [] CEquivArea_Inv;
-  if (CNearFieldOF_Inv != NULL) delete [] CNearFieldOF_Inv;
 
 	if (Primitive != NULL)        delete [] Primitive;
   if (Primitive_i != NULL)      delete [] Primitive_i;
@@ -5613,6 +5621,16 @@ CTNE2NSSolver::CTNE2NSSolver(CGeometry *geometry, CConfig *config,
 	CFy_Inv        = new su2double[nMarker];
 	CFz_Inv        = new su2double[nMarker];
 
+  /*--- Rotorcraft coefficients ---*/
+  
+  CT_Inv           = new su2double[nMarker];
+  CQ_Inv           = new su2double[nMarker];
+  CMerit_Inv       = new su2double[nMarker];
+  
+  CT_Mnt           = new su2double[nMarker];
+  CQ_Mnt           = new su2double[nMarker];
+  CMerit_Mnt       = new su2double[nMarker];
+  
 	/*--- Initialize total coefficients ---*/
 	Total_CD    = 0.0;  Total_CL    = 0.0;  Total_CSF = 0.0;
   Total_CFx   = 0.0;  Total_CFy   = 0.0;  Total_CFz = 0.0;

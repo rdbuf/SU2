@@ -405,9 +405,7 @@ CNumerics::~CNumerics(void) {
   if (sumdFdYjh != NULL) delete [] sumdFdYjh;
   if (sumdFdYieve != NULL) delete [] sumdFdYieve;
   if (sumdFdYjeve != NULL) delete [] sumdFdYjeve;
-  if (Diffusion_Coeff_i != NULL) delete [] Diffusion_Coeff_i;
-  if (Diffusion_Coeff_j != NULL) delete [] Diffusion_Coeff_j;
-  if (var != NULL) delete [] var;
+  //if (var != NULL) delete [] var;
 
 
   if (using_uq) {

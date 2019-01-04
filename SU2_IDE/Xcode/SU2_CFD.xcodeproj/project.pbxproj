@@ -78,6 +78,11 @@
 		E96FAF162189FECA0046BF5D /* fem_cgns_elements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E96FAF132189FECA0046BF5D /* fem_cgns_elements.cpp */; };
 		E96FAF182189FF0A0046BF5D /* data_manufactured_solutions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E96FAF172189FF0A0046BF5D /* data_manufactured_solutions.cpp */; };
 		E9AA98A71BB3436900B7FE37 /* driver_structure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9AA98A61BB3436900B7FE37 /* driver_structure.cpp */; };
+		E9BE412421E0043C004695CB /* solver_direct_tne2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9BE411F21E0043B004695CB /* solver_direct_tne2.cpp */; };
+		E9BE412521E0043C004695CB /* variable_direct_tne2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9BE412021E0043C004695CB /* variable_direct_tne2.cpp */; };
+		E9BE412621E0043C004695CB /* driver_direct_multizone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9BE412121E0043C004695CB /* driver_direct_multizone.cpp */; };
+		E9BE412721E0043C004695CB /* driver_direct_singlezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9BE412221E0043C004695CB /* driver_direct_singlezone.cpp */; };
+		E9BE412821E0043C004695CB /* numerics_direct_tne2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9BE412321E0043C004695CB /* numerics_direct_tne2.cpp */; };
 		E9C8307F2061E60E004417A9 /* fem_geometry_structure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9C830752061E60E004417A9 /* fem_geometry_structure.cpp */; };
 		E9C830802061E60E004417A9 /* fem_integration_rules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9C830762061E60E004417A9 /* fem_integration_rules.cpp */; };
 		E9C830812061E60E004417A9 /* fem_standard_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9C830772061E60E004417A9 /* fem_standard_element.cpp */; };
@@ -242,6 +247,11 @@
 		E97B6C8117F941800008255B /* config_template.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; name = config_template.cfg; path = ../../config_template.cfg; sourceTree = "<group>"; };
 		E9AA98A61BB3436900B7FE37 /* driver_structure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; name = driver_structure.cpp; path = ../../SU2_CFD/src/driver_structure.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		E9AA98A81BB3438F00B7FE37 /* driver_structure.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; lineEnding = 0; name = driver_structure.hpp; path = ../../SU2_CFD/include/driver_structure.hpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		E9BE411F21E0043B004695CB /* solver_direct_tne2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = solver_direct_tne2.cpp; path = ../../SU2_CFD/src/solver_direct_tne2.cpp; sourceTree = "<group>"; };
+		E9BE412021E0043C004695CB /* variable_direct_tne2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = variable_direct_tne2.cpp; path = ../../SU2_CFD/src/variable_direct_tne2.cpp; sourceTree = "<group>"; };
+		E9BE412121E0043C004695CB /* driver_direct_multizone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = driver_direct_multizone.cpp; path = ../../SU2_CFD/src/driver_direct_multizone.cpp; sourceTree = "<group>"; };
+		E9BE412221E0043C004695CB /* driver_direct_singlezone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = driver_direct_singlezone.cpp; path = ../../SU2_CFD/src/driver_direct_singlezone.cpp; sourceTree = "<group>"; };
+		E9BE412321E0043C004695CB /* numerics_direct_tne2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = numerics_direct_tne2.cpp; path = ../../SU2_CFD/src/numerics_direct_tne2.cpp; sourceTree = "<group>"; };
 		E9C830752061E60E004417A9 /* fem_geometry_structure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fem_geometry_structure.cpp; path = ../../Common/src/fem_geometry_structure.cpp; sourceTree = "<group>"; };
 		E9C830762061E60E004417A9 /* fem_integration_rules.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fem_integration_rules.cpp; path = ../../Common/src/fem_integration_rules.cpp; sourceTree = "<group>"; };
 		E9C830772061E60E004417A9 /* fem_standard_element.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fem_standard_element.cpp; path = ../../Common/src/fem_standard_element.cpp; sourceTree = "<group>"; };
@@ -297,6 +307,7 @@
 				0530E56D17FDF7C600733CE8 /* variable_direct_elasticity.cpp */,
 				05E6DBF517EB62A100FA1F7E /* variable_direct_heat.cpp */,
 				05E6DBFA17EB62A100FA1F7E /* variable_direct_transition.cpp */,
+				E9BE412021E0043C004695CB /* variable_direct_tne2.cpp */,
 				05E6DBEF17EB62A100FA1F7E /* variable_adjoint_mean.cpp */,
 				E941BBAD1B71D564005C6C06 /* variable_adjoint_discrete.cpp */,
 				05E6DBF217EB62A100FA1F7E /* variable_adjoint_turbulent.cpp */,
@@ -317,6 +328,7 @@
 				0530E56917FDF7AC00733CE8 /* solver_direct_elasticity.cpp */,
 				05E6DBE017EB62A100FA1F7E /* solver_direct_heat.cpp */,
 				05E6DBE517EB62A100FA1F7E /* solver_direct_transition.cpp */,
+				E9BE411F21E0043B004695CB /* solver_direct_tne2.cpp */,
 				05E6DBDA17EB62A100FA1F7E /* solver_adjoint_mean.cpp */,
 				E941BB8D1B71D0D0005C6C06 /* solver_adjoint_discrete.cpp */,
 				05E6DBDD17EB62A100FA1F7E /* solver_adjoint_turbulent.cpp */,
@@ -483,6 +495,7 @@
 				E9F512C71CB2FD6B004D5089 /* numerics_direct_elasticity_nonlinear.cpp */,
 				05E6DBC917EB62A100FA1F7E /* numerics_direct_heat.cpp */,
 				05E6DBCE17EB62A100FA1F7E /* numerics_direct_transition.cpp */,
+				E9BE412321E0043C004695CB /* numerics_direct_tne2.cpp */,
 				05E6DBC317EB62A100FA1F7E /* numerics_adjoint_mean.cpp */,
 				05E6DBC617EB62A100FA1F7E /* numerics_adjoint_turbulent.cpp */,
 				05E6DBD317EB62A100FA1F7E /* numerics_structure.cpp */,
@@ -542,6 +555,8 @@
 				E96FAF172189FF0A0046BF5D /* data_manufactured_solutions.cpp */,
 				05E6DBBC17EB62A000FA1F7E /* definition_structure.cpp */,
 				E9AA98A61BB3436900B7FE37 /* driver_structure.cpp */,
+				E9BE412121E0043C004695CB /* driver_direct_multizone.cpp */,
+				E9BE412221E0043C004695CB /* driver_direct_singlezone.cpp */,
 				05AF9F1C1BE1E1770062E1F1 /* FEA */,
 				05F108951978D28F00F2F288 /* FluidModel */,
 				0530E57317FDF97F00733CE8 /* Geometry */,
@@ -701,9 +716,11 @@
 				05F1089D1978D2AE00F2F288 /* fluid_model.cpp in Sources */,
 				E9C830812061E60E004417A9 /* fem_standard_element.cpp in Sources */,
 				05E6DC1317EB62A100FA1F7E /* numerics_direct_transition.cpp in Sources */,
+				E9BE412421E0043C004695CB /* solver_direct_tne2.cpp in Sources */,
 				0506980A1AA6179100FF4F07 /* output_fieldview.cpp in Sources */,
 				05E6DC1417EB62A100FA1F7E /* numerics_direct_turbulent.cpp in Sources */,
 				E96FAF102189FE9C0046BF5D /* blas_structure.cpp in Sources */,
+				E9BE412721E0043C004695CB /* driver_direct_singlezone.cpp in Sources */,
 				05E6DC1817EB62A100FA1F7E /* numerics_structure.cpp in Sources */,
 				05E6DC1917EB62A100FA1F7E /* numerics_template.cpp in Sources */,
 				E9C830822061E60E004417A9 /* fem_wall_distance.cpp in Sources */,
@@ -722,9 +739,11 @@
 				05E6DC2217EB62A100FA1F7E /* solver_adjoint_turbulent.cpp in Sources */,
 				05E6DC2517EB62A100FA1F7E /* solver_direct_heat.cpp in Sources */,
 				05E6DC2717EB62A100FA1F7E /* solver_direct_mean.cpp in Sources */,
+				E9BE412821E0043C004695CB /* numerics_direct_tne2.cpp in Sources */,
 				E9F512C91CB2FD6B004D5089 /* numerics_direct_elasticity_nonlinear.cpp in Sources */,
 				05E6DC2A17EB62A100FA1F7E /* solver_direct_transition.cpp in Sources */,
 				E9F130CC1D513DA300EC8963 /* numerics_direct_mean_inc.cpp in Sources */,
+				E9BE412521E0043C004695CB /* variable_direct_tne2.cpp in Sources */,
 				E9C830852061E60E004417A9 /* geometry_structure_fem_part.cpp in Sources */,
 				05E6DC2B17EB62A100FA1F7E /* solver_direct_turbulent.cpp in Sources */,
 				E941BB941B71D124005C6C06 /* mpi_structure.cpp in Sources */,
@@ -739,6 +758,7 @@
 				E9C830932061E799004417A9 /* solver_direct_mean_fem.cpp in Sources */,
 				E9C830832061E60E004417A9 /* fem_work_estimate_metis.cpp in Sources */,
 				05E6DC4017EB62A100FA1F7E /* variable_direct_turbulent.cpp in Sources */,
+				E9BE412621E0043C004695CB /* driver_direct_multizone.cpp in Sources */,
 				E9F130CE1D513DA300EC8963 /* solver_direct_mean_inc.cpp in Sources */,
 				E9D9CE891C62A1C8004119E9 /* transfer_physics.cpp in Sources */,
 				E941BB931B71D124005C6C06 /* linear_solvers_structure_b.cpp in Sources */,
